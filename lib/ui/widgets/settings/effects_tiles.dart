@@ -519,15 +519,7 @@ class _SupportersMark extends StatelessWidget {
   const _SupportersMark();
 
   @override
-  Widget build(BuildContext context) {
-    final iconColor = context.theme.iconTheme.color;
-    final markColor = iconColor?.withOpacityExt(0.6);
-    return Icon(
-      Broken.crown_1,
-      size: 14.0,
-      color: markColor,
-    );
-  }
+  Widget build(BuildContext context) => const SizedBox.shrink(); // fork pessoal: sem selo de apoiador
 }
 
 class _SupportersTitle extends StatelessWidget {
@@ -538,18 +530,9 @@ class _SupportersTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Flexible(
-          child: Text(
-            title,
-            style: textTheme.displayMedium,
-          ),
-        ),
-        const SizedBox(width: 6.0),
-        const _SupportersMark(),
-      ],
+    return Text(
+      title,
+      style: textTheme.displayMedium,
     );
   }
 }
@@ -630,7 +613,7 @@ extension _EffectThemeAccess on EffectTheme {
     EffectTheme.fireflies => null,
   };
 
-  bool isForSupporters() => toUnlockable() != null;
+  bool isForSupporters() => false; // fork pessoal: sem selo de apoiador
 }
 
 extension _MiniplayerVisualizerAccess on MiniplayerVisualizer {
@@ -642,7 +625,7 @@ extension _MiniplayerVisualizerAccess on MiniplayerVisualizer {
     MiniplayerVisualizer.bars || MiniplayerVisualizer.waves || MiniplayerVisualizer.beatRings || MiniplayerVisualizer.reactiveParticles => null,
   };
 
-  bool isForSupporters() => toUnlockable() != null;
+  bool isForSupporters() => false; // fork pessoal: sem selo de apoiador
 
   /// only one of them is on at a time, the rest go along with any.
   bool isMainStyle() => switch (this) {

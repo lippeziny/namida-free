@@ -206,7 +206,7 @@ class YoutubeAccountManagePage extends StatelessWidget with NamidaRouteWidget {
     );
   }
 
-  static bool _canAddMultiAccounts(MembershipType? ms) => ms == MembershipType.pookie || ms == MembershipType.patootie || ms == MembershipType.owner;
+  static bool _canAddMultiAccounts(MembershipType? ms) => true;
 
   Widget _buildAddAccountButton(BuildContext context, {double sizeMultiplier = 1.2}) {
     return ObxO(

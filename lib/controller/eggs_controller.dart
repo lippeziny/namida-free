@@ -47,13 +47,7 @@ class EggsController {
   var _dateEggRefreshAt = DateTime(0);
   Timer? _dateEggRefreshTimer;
 
-  bool isSupporter() {
-    if (settings.didSupportNamida) return true;
-    final membership = YoutubeAccountController.membership.userMembershipTypeGlobal.value;
-    final isMember = membership != null && membership.index >= MembershipType.cutie.index;
-    if (isMember) settings.didSupportNamida = true;
-    return isMember;
-  }
+  bool isSupporter() => true; // fork pessoal: tudo liberado
 
   bool collect(NamidaEgg egg) {
     final data = settings.eggs.value;

@@ -79,13 +79,7 @@ class YoutubeAccountController {
   }
 
   static bool operationBlockedByMembership(YoutiPieOperation operation, MembershipType? ms) {
-    final needsMembership = _operationNeedsMembership[operation] ?? true;
-    if (needsMembership) {
-      if (ms == null || ms.index < MembershipType.cutie.index) {
-        return true;
-      }
-    }
-    return false;
+    return false; // fork pessoal: nenhuma operação bloqueada por membership
   }
 
   static bool _canShowOperationError(YoutiPieOperation operation) {
