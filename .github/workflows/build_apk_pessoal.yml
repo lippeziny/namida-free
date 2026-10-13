@@ -16,8 +16,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v5
-        with:
-          submodules: recursive
+
+      # ffmpeg_build não é público e só serve para desktop; baixa só os submódulos necessários
+      - name: Submódulos públicos
+        run: git submodule update --init --depth=1 external/language external/party_relay
 
       - uses: subosito/flutter-action@v2
         with:
