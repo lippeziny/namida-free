@@ -1,0 +1,73 @@
+name: build_apk_pessoal
+
+# Compila o APK arm64 do fork para uso pessoal.
+# Rode em: Actions > build_apk_pessoal > Run workflow. O APK sai em "Artifacts".
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_id_separado:
+        description: "Usar outro ID de app (instala ao lado do Namida original, sem apagar os dados dele)"
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: pubspec.yaml
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Trocar o ID do app
+        if: ${{ inputs.app_id_separado }}
+        run: |
+          grep -rIl --exclude-dir=.git --exclude-dir=external 'com.msob7y.namida' . \
+            | xargs sed -i 's/com\.msob7y\.namida/com.msob7y.namida.free/g'
+
+      - name: Dependências
+        run: flutter pub get
+
+      # Chave de assinatura própria, criada uma vez e reaproveitada pelo cache.
+      # Sem reaproveitar a chave, cada APK novo recusaria instalar por cima do anterior.
+      - name: Restaurar chave de assinatura
+        id: keycache
+        uses: actions/cache@v4
+        with:
+          path: android/app/keystore.jks
+          key: namida-free-keystore-v1
+
+      - name: Criar chave de assinatura
+        if: steps.keycache.outputs.cache-hit != 'true'
+        run: |
+          keytool -genkeypair -v -keystore android/app/keystore.jks \
+            -alias namida -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass namidafree -keypass namidafree \
+            -dname "CN=namida-free"
+
+      - name: key.properties
+        run: |
+          cat > android/key.properties <<'EOP'
+          keyAlias=namida
+          keyPassword=namidafree
+          storePassword=namidafree
+          storeFile=keystore.jks
+          EOP
+
+      - name: Compilar APK
+        run: flutter build apk --release --target-platform android-arm64
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: namida-free-arm64
+          path: build/app/outputs/flutter-apk/*arm64*.apk
+          retention-days: 14
